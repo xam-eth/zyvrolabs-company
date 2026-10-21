@@ -1,7 +1,7 @@
 # ZYVRO CONTENT OPERATING FRAMEWORK
 
 **Owner:** Zyvro Content Intelligence Agent
-**Version:** 1.0 (2026-10-21)
+**Version:** 1.1 (2026-10-21) — v1.0 + Prompt Patch: Evidence Integrity & Execution Control
 **Status:** ACTIVE — dibuat setelah knowledge audit, repository inspection, dan capability audit nyata.
 **Bukan pengganti knowledge.** Dokumen ini menggabungkan `AGENT-CHARTER.md`, `ZYVRO_BRAND_CONTEXT.md`, `PRODUCT_INTELLIGENCE.md`, `CONTENT_STRATEGY.md`, `PLATFORM_PLAYBOOK.md`, `VISUAL_PRODUCTION.md`, `COMPETITOR_INTELLIGENCE.md`, `PUBLISHING_AND_APPROVAL.md` menjadi urutan tindakan yang bisa dijalankan berulang. Jika bertentangan dengan charter atau knowledge, charter/knowledge menang dan konflik dicatat di change log bawah.
 
@@ -113,10 +113,57 @@ Format minimal per jenis keluaran:
 
 ---
 
+## I. EVIDENCE INTEGRITY & EXECUTION CONTROL (ditambahkan v1.1 — mengikat semua tahap)
+
+Bagian ini tidak menggantikan charter atau knowledge; ia membuat klaim dapat ditelusuri dan mencegah status palsu. Lima aturan berikut berlaku sebelum approval package apa pun diserahkan.
+
+### I.1 Claim-to-Evidence Traceability
+
+Audit setiap klaim faktual di caption, video, visual, judul, dan CTA. Untuk setiap klaim penting catat: `claim_id` (mis. `CLM-001`), pernyataan publik, sumber bukti yang benar-benar diperiksa, lokasi bukti (file/fungsi/baris/test result/capture/URL), metode verifikasi, status (VERIFIED/LIKELY/ASSUMPTION/HYPOTHESIS/UNKNOWN), dan batasan yang dapat mengubah interpretasi.
+
+- Dokumentasi internal **bukan** bukti VERIFIED untuk perilaku runtime; dokumen membuktikan apa yang *dinyatakan/direncanakan*.
+- Metode: `SOURCE_INSPECTION` (kode/aset diperiksa), `AUTOMATED_TEST` (test dijalankan, hasil tersedia — sebut siapa yang menjalankan), `RUNTIME_OBSERVATION` (perilaku diamati saat berjalan), `VISUAL_CAPTURE` (frame menunjukkan keadaan visual), `EXTERNAL_SOURCE` (sumber luar terperiksa). Satu metode tidak membuktikan hal yang hanya bisa dibuktikan metode lain.
+- Bukti tidak cukup → turunkan cakupan atau hapus klaim. Jangan mengarang bukti demi caption.
+- **Aturan pose/arah (pelajaran 2026-10-21):** jangan klaim orientasi/pose/gerakan dari satu screenshot statis tanpa hasil ukur (probe/test) yang mendukung.
+
+### I.2 Publication Asset Manifest
+
+Setiap approval package wajib memuat manifest aset final (`PUBLICATION_ASSET_MANIFEST.md`): nama file/referensi yang dapat diakses, jenis aset, platform + posisi penggunaan, klasifikasi (aktual/edit/AI concept/hybrid), bukti asal, status pemeriksaan kualitas & hak penggunaan, dan apakah aset termasuk dalam approval yang diminta.
+
+- Caption, gambar, video, urutan carousel, CTA di paket harus sama dengan materi final.
+- Jangan minta approval untuk aset A bila materi publikasi sebenarnya memuat aset lain yang belum disebutkan.
+- Jika reviewer tidak dapat mengakses/melihat aset, jangan nyatakan aset telah direview.
+- Perubahan material pada caption/aset/platform/tujuan → pemeriksaan + approval ulang.
+
+### I.3 Explicit Startup & Persistence Verification
+
+Setiap sesi baru: jalankan startup protocol (A) dan catat ringkas: lokasi framework yang benar-benar dibaca (+ versi/waktu update), knowledge yang dibaca untuk tugas ini, repository/branch/commit yang benar-benar diperiksa, catatan sesi sebelumnya yang dipakai, perubahan yang ditemukan, tool yang benar-benar digunakan + keterbatasannya.
+
+- Jangan laporkan "selesai" untuk hal yang hanya direncanakan.
+- Akhir sesi: simpan hanya delta state yang berguna (commit referensi terbaru, temuan terverifikasi, status approval, keputusan brand terbuka, hambatan aktif).
+- Persistence gagal → laporkan. **Catatan lingkungan (2026-10-21):** workspace sandbox tidak durabel (clone/capture mentah dapat hilang antar-sesi); GitHub branch knowledge adalah media persistence yang dapat diandalkan — push adalah bagian dari persistence, bukan opsional.
+
+### I.4 Precision Language Gate
+
+Sebelum menyerahkan konten, periksa kata-kata yang menyiratkan bukti lebih kuat dari yang ada:
+- Jangan sebut pengujian browser sebagai pengujian perangkat fisik.
+- Jangan sebut fitur terintegrasi sebagai fitur yang terbukti berjalan.
+- Jangan sebut screenshot sebagai bukti performa.
+- Jangan sebut metrik test sebagai bukti kesiapan produksi.
+- Jangan sebut konsep AI sebagai gameplay aktual.
+Jelaskan kondisi sebenarnya: environment, metode pengujian, dan batasan material.
+
+### I.5 Final Consistency Gate
+
+Sebelum menyerahkan paket, bandingkan: (1) klaim caption, (2) klaim tabel bukti/claim audit, (3) visual yang benar-benar disertakan, (4) daftar aset final, (5) platform & akun tujuan, (6) status approval, (7) keputusan brand yang masih terbuka. Kontradiksi, aset hilang, atau klaim tanpa bukti memadai → paket **tidak** boleh ditandai siap. Status akhir mencerminkan kondisi nyata; paket yang ditarik wajib ditandai (mis. `SUPERSEDED.md`), tidak dibiarkan tampak valid.
+
+---
+
 ## CHANGE LOG FRAMEWORK
 
 | Tanggal | Perubahan | Alasan | Status |
 |---|---|---|---|
-| 2026-10-21 | v1.0 dibuat | Initial execution task (Task D) setelah knowledge audit + repo inspection + capability audit | TESTED sebagian: prosedur D (capture DUSKHOLD) dan B (API/clone) sudah dijalankan sukses sesi ini; prosedur E/F menunggu用例 nyata |
+| 2026-10-21 | v1.0 dibuat | Initial execution task (Task D) setelah knowledge audit + repo inspection + capability audit | TESTED sebagian: prosedur D (capture DUSKHOLD) dan B (API/clone) sudah dijalankan sukses sesi ini; prosedur E/F menunggu kasus nyata |
+| 2026-10-21 | v1.1: Bagian I ditambahkan (claim traceability, asset manifest, startup/persistence verification, precision language gate, final consistency gate) | Prompt Patch "Evidence Integrity & Execution Control" + kegagalan nyata: capture BUILD 25 menunjukkan rig rusak ("jalan baring") yang terlewat oleh tafsir visual agent | TESTED sebagian: I.3 menangkap perubahan kedua repo pada startup sesi lanjutan; I.5 memicu penarikan paket ZV-001 v1 sebelum mencapai reviewer. Regression test berikutnya: jalankan I.1–I.5 penuh pada ZV-001 v2 (claim audit + manifest belum diproduksi) |
 
 Catatan verifikasi v1.0: langkah yang sudah terbukti berjalan di sandbox ini dicatat di ledger capability `agent-state/STATE_2026-10-21.md`. Langkah yang bergantung kemampuan belum teruji ditandai di sana, bukan di sini.
